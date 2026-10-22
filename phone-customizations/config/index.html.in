@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content" />
+    <title>CloudCLI</title>
+    <link rel="modulepreload" href="/cloudcli-extensions.js">
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json" crossorigin="use-credentials"  />
+    
+    <!-- iOS Safari PWA Meta Tags -->
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="CloudCLI" />
+    
+    <!-- iOS Safari Icons -->
+    <link rel="apple-touch-icon" sizes="152x152" href="/icons/icon-152x152.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/icon-192x192.png" />
+    
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#ffffff" />
+    <meta name="msapplication-TileColor" content="#ffffff" />
+    
+    <!-- Prevent zoom on iOS -->
+    <meta name="format-detection" content="telephone=no" />
+    <script>window.addEventListener('error',e=>console.error('CloudCLI load error: '+JSON.stringify({message:e.message,target:e.target?.outerHTML})),true);window.addEventListener('unhandledrejection',e=>console.error('CloudCLI load rejection:',e.reason?.message||String(e.reason)));</script>
+    <script type="module" crossorigin src="/assets/{{CORE_ASSET}}"></script>
+    <link rel="modulepreload" crossorigin href="/assets/vendor-react-BGZc9oRE.js">
+    <link rel="modulepreload" crossorigin href="/assets/vendor-codemirror-CYrSt7-U.js">
+    <link rel="modulepreload" crossorigin href="/assets/vendor-xterm-CS4rQ5Mr.js">
+    <link rel="stylesheet" crossorigin href="/assets/index-CzxdX95p.css">
+  </head>
+  <body>
+    <div id="root"></div>
+    
+    <!-- Service Worker Registration -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js?v=fast-v3', { updateViaCache: 'none' })
+            .then(registration => {
+              console.log('SW registered: ', registration);
+            })
+            .catch(registrationError => {
+              console.log('SW registration failed: ', registrationError);
+            });
+        });
+      }
+    </script>
+  </body>
+</html>

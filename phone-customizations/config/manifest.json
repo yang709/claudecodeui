@@ -1,0 +1,26 @@
+{
+  "name": "CloudCLI",
+  "short_name": "CloudCLI",
+  "description": "通过手机访问你的 CloudCLI 编程助手",
+  "start_url": "/?new=1",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "/icons/cloudcli-192-v1.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/cloudcli-512-v1.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "id": "/"
+}

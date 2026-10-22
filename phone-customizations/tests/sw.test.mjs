@@ -1,0 +1,21 @@
+import test from 'node:test';import assert from 'node:assert/strict';import vm from'node:vm';import{readFile}from'node:fs/promises';
+const source=await readFile(new URL('../src/client/sw.js',import.meta.url),'utf8');
+function harness(){
+ const events={},stores=new Map(),calls=[];let fail=false,pending=false,missing=false;
+ const key=value=>new URL(typeof value==='string'?value:value.url,'https://cloudcli.test').href;
+ const cache=name=>{if(!stores.has(name))stores.set(name,new Map());const data=stores.get(name);return{put:async(k,v)=>{data.set(key(k),v.clone())},match:async k=>data.get(key(k))?.clone()}};
+ const caches={open:async n=>cache(n),keys:async()=>[...stores.keys()],delete:async n=>stores.delete(n),match:async k=>{for(const data of stores.values()){const value=data.get(key(k));if(value)return value.clone()}}};
+ const fetch=async input=>{const url=key(input);calls.push(url);if(pending)return new Promise(()=>{});if(fail)throw Error('offline');if(missing&&url.includes('next.js'))return new Response('missing',{status:404});return url==='https://cloudcli.test/'?new Response('<script src="/assets/'+(missing?'next':'main')+'.js"></script><link href="/assets/main.css"><link href="/cloudcli-extensions.js">',{headers:{'Content-Type':'text/html'}}):new Response('asset',{headers:{'Content-Type':url.endsWith('.css')?'text/css':'application/javascript'}})};
+ const self={location:{origin:'https://cloudcli.test'},clients:{claim:async()=>{}},skipWaiting:async()=>{},addEventListener:(n,fn)=>events[n]=fn};
+ vm.runInNewContext(source,{self,caches,fetch,URL,Response,Set,Promise});
+ async function install(){const waits=[];events.install({waitUntil:p=>waits.push(p)});await Promise.all(waits)}
+ function request(path,options={}){let response;const waits=[];events.fetch({request:{url:key(path),method:'GET',mode:'navigate',...options},waitUntil:p=>waits.push(p),respondWith:p=>response=p});return{response,waits}}
+ return{events,stores,calls,caches,install,request,set fail(v){fail=v},set pending(v){pending=v},set missing(v){missing=v}};
+}
+test('install warms only public app shell and required assets',async()=>{const h=harness();await h.install();assert.equal(h.calls.length,4);assert.ok(h.calls.every(url=>!url.includes('/api/')));assert.ok(await(await h.caches.open('cloudcli-shell-v4')).match('/__cloudcli_shell__'))});
+test('warm navigation returns cached shell without waiting for network',async()=>{const h=harness();await h.install();h.pending=true;const req=h.request('/session/existing');assert.equal(req.waits.length,1);const result=await Promise.race([req.response,new Promise((_,reject)=>setTimeout(()=>reject(Error('blocked on network')),100))]);assert.match(await result.text(),/main.js/)});
+test('API, websocket, cross-origin and non-GET requests are never cached or intercepted',async()=>{const h=harness();await h.install();for(const[path,options]of[['/api/projects',{}],['/ws',{}],['https://other.test/asset.js',{}],['/api/auth/login',{method:'POST'}]])assert.equal(h.request(path,options).response,undefined)});
+test('failed asset update retains the previous complete shell',async()=>{const h=harness();await h.install();h.missing=true;const req=h.request('/');await req.response;await Promise.all(req.waits);const result=await(await h.caches.open('cloudcli-shell-v4')).match('/__cloudcli_shell__');assert.match(await result.text(),/main.js/)});
+test('activation leaves unrelated caches untouched',async()=>{const h=harness();await h.install();await h.caches.open('unrelated-app');await h.caches.open('claude-ui-v2');const waits=[];h.events.activate({waitUntil:p=>waits.push(p)});await Promise.all(waits);assert.ok(h.stores.has('unrelated-app'));assert.ok(!h.stores.has('claude-ui-v2'))});
+
+test('invalid cached script MIME types are replaced from the network',async()=>{const h=harness();await(await h.caches.open('claude-ui-v2')).put('/assets/main.js',new Response('broken',{headers:{'Content-Type':'/invalid/path.js'}}));await h.install();const valid=await(await h.caches.open('cloudcli-static-v4')).match('/assets/main.js');assert.equal(valid.headers.get('content-type'),'application/javascript');assert.ok(h.calls.some(url=>url.endsWith('/assets/main.js')))});

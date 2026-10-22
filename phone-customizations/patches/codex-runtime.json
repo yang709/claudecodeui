@@ -1,0 +1,22 @@
+{
+  "before_sha256": "25f3b640cdec28326cb416f1d464e503056a160126476a9c1def5604ae252fba",
+  "after_sha256": "7bb709244fe393122e9c5f66a84ca022206ececc48fe7fefcd96f32095859135",
+  "edits": [
+    {
+      "start": 0,
+      "old": "/**\n * OpenAI Codex SDK Integration\n * =============================\n *\n * This module provides integration with the OpenAI Codex SDK for non-interactive\n * chat sessions. It mirrors the Claude runtime adapter for consistency.\n *\n * ## Usage\n *\n * - codexRuntime.run(command, options, writer, context) - Execute a streamed prompt\n * - codexRuntime.abort(sessionId) - Cancel an active session\n */\nimport { Codex } from '@openai/codex-sdk';",
+      "new": "import { fileURLToPath } from 'node:url';\nimport path from 'node:path';\nimport os from 'node:os';\n/**\n * OpenAI Codex SDK Integration\n * =============================\n *\n * This module provides integration with the OpenAI Codex SDK for non-interactive\n * chat sessions. It mirrors the Claude runtime adapter for consistency.\n *\n * ## Usage\n *\n * - codexRuntime.run(command, options, writer, context) - Execute a streamed prompt\n * - codexRuntime.abort(sessionId) - Cancel an active session\n */\nimport { Codex } from '@openai/codex-sdk';"
+    },
+    {
+      "start": 6859,
+      "old": "\n    }\n}\n/**\n * Map permission mode to Codex SDK options\n * @param {string} permissionMode - 'default', 'acceptEdits', or 'bypassPermissions'\n * @returns {object} - { sandboxMode, approvalPolicy }\n */\nfunction mapPermissionModeToCodexOptions(permissionMode) {\n    switch (permissionMode) {\n        case 'acceptEdits':\n            return {\n                sandboxMode: 'workspace-write',\n                approvalPolicy: 'never'\n            };",
+      "new": "\n    }\n}\n/**\n * Map permission mode to Codex SDK options\n * @param {string} permissionMode - 'default', 'acceptEdits', or 'bypassPermissions'\n * @returns {object} - { sandboxMode, approvalPolicy }\n */\nfunction mapPermissionModeToCodexOptions(permissionMode) {\n    switch (permissionMode) {\n        case 'acceptEdits':\n            return {\n                sandboxMode: 'workspace-write',\n                approvalPolicy: 'on-request'\n            };"
+    },
+    {
+      "start": 10065,
+      "old": "\n    try {\n        codex = new Codex();\n        const threadOptions = {\n            workingDirectory,\n            skipGitRepoCheck: true,\n            sandboxMode,\n            approvalPolicy,\n            model: resolvedModel,\n            modelReasoningEffort: resolvedEffort,\n        };",
+      "new": "\n    try {\n        codex = new Codex({ codexPathOverride: fileURLToPath(new URL('./reviewed-launcher.mjs', import.meta.url)) });\n        const threadOptions = {\n            workingDirectory,\n            additionalDirectories: [path.join(os.homedir(), 'Documents', 'Codex')],\n            skipGitRepoCheck: true,\n            sandboxMode,\n            approvalPolicy,\n            model: resolvedModel,\n            modelReasoningEffort: resolvedEffort,\n        };"
+    }
+  ],
+  "upstream_path": "dist-server/server/modules/providers/list/codex/codex-runtime.provider.js"
+}

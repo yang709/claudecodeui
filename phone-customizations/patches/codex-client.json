@@ -1,0 +1,12 @@
+{
+  "before_sha256": "ad7a5d203f39fc825cf0a77ae87fa042119c7c6b9302ea7c66b02d7161aa42b3",
+  "after_sha256": "5cda8b07988ce3cd755709022c01974a31ea9e24d0a3f7bf27114b2999605864",
+  "edits": [
+    {
+      "start": 8383,
+      "old": "\n//# sourceMappingURL=codex-app-server.client.js.map",
+      "new": "\n//# sourceMappingURL=codex-app-server.client.js.map\n// Personal CloudCLI usage extension: read-only; no conversation is resumed.\nexport async function readCodexRateLimits() {\n    return withAppServer(call => call('account/rateLimits/read', {}));\n}\n"
+    }
+  ],
+  "upstream_path": "dist-server/server/modules/providers/list/codex/codex-app-server.client.js"
+}

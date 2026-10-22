@@ -1,0 +1,27 @@
+{
+  "before_sha256": "39f296861734109974f1e71648cace3891538aad2894929b43d539e1be94b1f8",
+  "after_sha256": "a56ec37121edb59d5e4e305bcb1ee7eeb7a62757d181fbc11877a4395a0f3126",
+  "edits": [
+    {
+      "start": 0,
+      "old": "#!/usr/bin/env node\n// Load environment variables before other imports execute.\nimport './load-env.js';\nimport fs, { promises as fsPromises } from 'fs';",
+      "new": "#!/usr/bin/env node\nimport { createUsageHandler } from './usage-service.mjs';\nimport { readCodexRateLimits } from './modules/providers/list/codex/codex-app-server.client.js';\n// Load environment variables before other imports execute.\nimport './load-env.js';\nimport { startupBootstrap, startupModels } from './startup.routes.mjs';\nimport { installFastStatic } from './static.routes.mjs';\n\nimport fs, { promises as fsPromises } from 'fs';"
+    },
+    {
+      "start": 5766,
+      "old": "",
+      "new": "\napp.get('/api/auth/bootstrap', authenticateToken, startupBootstrap);\napp.get('/api/providers/startup-models', authenticateToken, startupModels);"
+    },
+    {
+      "start": 7086,
+      "old": "\n// Unified provider MCP routes (protected)\napp.use('/api/providers', authenticateToken, providerRoutes);",
+      "new": "\n// Unified provider MCP routes (protected)\napp.get('/api/codex-usage', authenticateToken, createUsageHandler(readCodexRateLimits));\napp.use('/api/providers', authenticateToken, providerRoutes);"
+    },
+    {
+      "start": 7412,
+      "old": "\n// Serve public files (like api-docs.html)\napp.use(express.static(path.join(APP_ROOT, 'public')));",
+      "new": "\n// Serve public files (like api-docs.html)\ninstallFastStatic(app, APP_ROOT);\napp.use(express.static(path.join(APP_ROOT, 'public')));"
+    }
+  ],
+  "upstream_path": "dist-server/server/index.js"
+}

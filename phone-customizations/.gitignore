@@ -1,0 +1,17 @@
+# Installation archives, credentials, runtime state and generated artifacts
+/work/
+/outputs/
+/build/
+/.local/
+/node_modules/
+.DS_Store
+__pycache__/
+*.pyc
+.env
+.env.*
+*.db
+*.db-*
+*.sqlite*
+*.log
+*.pem
+*.key

@@ -1,0 +1,12 @@
+{
+  "name": "cloudcli-phone-customizations",
+  "version": "0.1.0",
+  "private": true,
+  "license": "AGPL-3.0-or-later",
+  "description": "Reproducible, credential-free overlay for CloudCLI 1.37.5 phone access",
+  "scripts": {
+    "test": "python3 scripts/test.py",
+    "build": "python3 scripts/build.py",
+    "check:live": "python3 scripts/deploy.py --check"
+  }
+}

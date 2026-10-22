@@ -1,0 +1,27 @@
+{
+  "package": "@cloudcli-ai/cloudcli",
+  "version": "1.37.5",
+  "repository": "https://github.com/siteboon/claudecodeui",
+  "patches": {
+    "frontend-core": {
+      "upstream_path": "dist/assets/index-BHOHDjCN.js",
+      "before_sha256": "3b0d6d96950d1c72954fc8fecd0222b9b501707363c94d790cc6615c324d12ec",
+      "captured_sha256": "e6e957f8e1652661078a5d77bdd5b202579e4458bf659b01ac5db3e83e05d552"
+    },
+    "server-entry": {
+      "upstream_path": "dist-server/server/index.js",
+      "before_sha256": "39f296861734109974f1e71648cace3891538aad2894929b43d539e1be94b1f8",
+      "captured_sha256": "a56ec37121edb59d5e4e305bcb1ee7eeb7a62757d181fbc11877a4395a0f3126"
+    },
+    "codex-runtime": {
+      "upstream_path": "dist-server/server/modules/providers/list/codex/codex-runtime.provider.js",
+      "before_sha256": "25f3b640cdec28326cb416f1d464e503056a160126476a9c1def5604ae252fba",
+      "captured_sha256": "7bb709244fe393122e9c5f66a84ca022206ececc48fe7fefcd96f32095859135"
+    },
+    "codex-client": {
+      "upstream_path": "dist-server/server/modules/providers/list/codex/codex-app-server.client.js",
+      "before_sha256": "ad7a5d203f39fc825cf0a77ae87fa042119c7c6b9302ea7c66b02d7161aa42b3",
+      "captured_sha256": "5cda8b07988ce3cd755709022c01974a31ea9e24d0a3f7bf27114b2999605864"
+    }
+  }
+}
